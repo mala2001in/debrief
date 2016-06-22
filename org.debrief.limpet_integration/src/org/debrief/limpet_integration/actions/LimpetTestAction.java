@@ -2,10 +2,15 @@ package org.debrief.limpet_integration.actions;
 
 import info.limpet.IStoreGroup;
 import info.limpet.IStoreItem;
+import info.limpet.QuantityRange;
 import info.limpet.data.impl.samples.StockTypes;
 import info.limpet.data.store.InMemoryStore;
 
 import java.util.Enumeration;
+
+import javax.measure.Measure;
+import javax.measure.quantity.Frequency;
+import javax.measure.quantity.Velocity;
 
 import org.debrief.limpet_integration.TopLevelTarget;
 import org.debrief.limpet_integration.adapters.DebriefLimpetAdapterFactory;
@@ -131,6 +136,11 @@ public class LimpetTestAction implements IWorkbenchWindowActionDelegate
         IStoreGroup grp = (IStoreGroup) limpetItem;
         StockTypes.NonTemporal.FrequencyHz freq = new StockTypes.NonTemporal.FrequencyHz("Rad Freq", null);
         freq.add(100);
+        Measure<Double, Frequency> minR =
+                Measure.valueOf(50d, freq.getUnits());
+            Measure<Double, Frequency> maxR =
+                Measure.valueOf(150d, freq.getUnits());
+        freq.setRange(new QuantityRange<Frequency>(minR, maxR));
         grp.add(freq);
       }
 
