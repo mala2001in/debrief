@@ -14,21 +14,18 @@
  */
 package ASSET.Scenario.Observers.Recording;
 
-import ASSET.Models.Decision.TargetType;
-import ASSET.Models.Detection.DetectionList;
-import ASSET.Models.Movement.HighLevelDemandedStatus;
-import ASSET.Models.Movement.SimpleDemandedStatus;
+import java.io.IOException;
+
 import ASSET.NetworkParticipant;
 import ASSET.ParticipantType;
+import ASSET.Models.Decision.TargetType;
+import ASSET.Models.Detection.DetectionList;
 import ASSET.Participants.Category;
-import ASSET.Participants.DemandedStatus;
 import MWC.GUI.Editable;
 import MWC.GenericData.TimePeriod;
 import MWC.GenericData.WorldDistance;
 import MWC.GenericData.WorldLocation;
 import MWC.GenericData.WorldSpeed;
-
-import java.io.IOException;
 
 public class NMEATrackObserver
   extends RecordStatusToFileObserverType
@@ -101,12 +98,6 @@ public class NMEATrackObserver
 
     final String dateStr = MWC.Utilities.TextFormatting.DebriefFormatDateTime.toString(theTime);
 
-    // get the demanded status
-    DemandedStatus demStat = pt.getDemandedStatus();
-
-    // get the activity
-    String activity = pt.getActivity();
-
     buff.append(dateStr);
     buff.append(",");
     buff.append(pt.getName());
@@ -120,43 +111,9 @@ public class NMEATrackObserver
     buff.append(df.format(stat.getCourse()));
     buff.append(",");
     buff.append(df.format(stat.getSpeed().getValueIn(WorldSpeed.M_sec)));
-
-    // do we have simple dem stat?
-    if (demStat instanceof SimpleDemandedStatus)
-    {
-      buff.append(",");
-      buff.append(df.format(((SimpleDemandedStatus) demStat).getCourse()));
-      buff.append(",");
-      buff.append(df.format(((SimpleDemandedStatus) demStat).getSpeed()));
-      buff.append(",");
-      buff.append(df.format(((SimpleDemandedStatus) demStat).getHeight()));
-    }
-    else
-    {
-      if (demStat instanceof HighLevelDemandedStatus)
-      {
-        HighLevelDemandedStatus ds = (HighLevelDemandedStatus) demStat;
-        buff.append(",");
-        buff.append("heading for waypoint#" + (ds.getCurrentTargetIndex() + 1));
-
-        buff.append(",");
-
-        WorldSpeed demSpeed = ds.getSpeed();
-        if (demSpeed != null)
-        {
-          buff.append(df.format(demSpeed.getValueIn(WorldSpeed.M_sec)));
-        }
-        else
-        {
-
-        }
-
-      }
-    }
     buff.append(",");
     buff.append(df.format(stat.getFuelLevel()));
     buff.append(",");
-    buff.append(activity);
     res = buff.toString();
 
     if (res != null)

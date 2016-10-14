@@ -41,7 +41,7 @@
 	</ScenarioGenerator>
 	<ObserverList>
 		<TimeObserver Name="Doomsday Timer" Active="true">
-			<Duration Value="12" Units="hours" />
+			<Duration Value="72" Units="hours" />
 		</TimeObserver>
 		<DebriefReplayObserver Name="Debrief tracks"
 			record_detections="false" record_positions="true" Active="false"
