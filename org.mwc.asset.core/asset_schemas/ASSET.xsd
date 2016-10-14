@@ -182,6 +182,7 @@
 			<xs:element name="ElapsedTimeObserver" type="ElapsedTimeObserverType"/>
 			<xs:element name="FinalStateObserver" type="FinalStateObserverType"/>
 			<xs:element name="CSVTrackObserver" type="CSVTrackObserverType"/>
+			<xs:element name="NMEATrackObserver" type="NMEATrackObserverType"/>
 			<xs:element name="TimeObserver" type="TimeObserverType"/>
 			<xs:element name="ProximityObserver" type="ProximityObserverType"/>
 			<xs:element name="RemoveInAreaObserver" type="RemoveInAreaObserverType"/>
@@ -2157,6 +2158,12 @@
 								</xs:documentation>
 							</xs:annotation>
 						</xs:element>
+						<xs:element name="Expire" type="ExpireType">
+							<xs:annotation>
+								<xs:documentation>Remove the participant from the simulation
+								</xs:documentation>
+							</xs:annotation>
+						</xs:element>
 						<xs:element name="Composite" type="CompositeType">
 							<xs:annotation>
 								<xs:documentation>This architectural behaviour contains a
@@ -2364,6 +2371,24 @@
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="DecisionModelType">
+				<xs:sequence>
+					<xs:element name="Delay" type="DurationType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ExpireType">
+		<xs:annotation>
+			<xs:documentation>Remove participant</xs:documentation>
+			<xs:documentation source="http://asset.info/ui">Visible: inherited
+				Editable: delay
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="DecisionModelType">
+				<xs:sequence>
+					<xs:element name="Delay" type="DurationType" minOccurs="0"/>
+				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -3565,6 +3590,17 @@
 	<xs:complexType name="CSVTrackObserverType">
 		<xs:annotation>
 			<xs:documentation>Record tracks as CSV file</xs:documentation>
+			<xs:documentation source="http://asset.info/ui">Visible: inherited .
+				Editable:
+				inherited</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="CoreFileObserverType"> </xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NMEATrackObserverType">
+		<xs:annotation>
+			<xs:documentation>Record tracks as NMEA log file (RN WECDIS format)</xs:documentation>
 			<xs:documentation source="http://asset.info/ui">Visible: inherited .
 				Editable:
 				inherited</xs:documentation>

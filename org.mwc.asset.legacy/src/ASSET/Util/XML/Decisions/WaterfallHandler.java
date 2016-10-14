@@ -239,6 +239,13 @@ abstract public class WaterfallHandler extends CoreDecisionHandler
 					handler.addModel(dec);
 				}
 			});
+      list.addHandler(new ExpireHandler()
+      {
+        public void setModel(final ASSET.Models.DecisionType dec)
+        {
+          handler.addModel(dec);
+        }
+      });
 			list.addHandler(new MoveHandler()
 			{
 				public void setModel(final ASSET.Models.DecisionType dec)

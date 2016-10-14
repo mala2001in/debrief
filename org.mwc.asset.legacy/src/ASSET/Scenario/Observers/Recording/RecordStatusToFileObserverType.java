@@ -36,13 +36,12 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Ian
- * Date: 28-Oct-2003
- * Time: 14:17:34
- * To change this template use Options | File Templates.
+ * Created by IntelliJ IDEA. User: Ian Date: 28-Oct-2003 Time: 14:17:34 To change this template use
+ * Options | File Templates.
  */
-abstract public class RecordStatusToFileObserverType extends ContinuousRecordToFileObserver implements ASSET.Scenario.ScenarioSteppedListener
+abstract public class RecordStatusToFileObserverType extends
+    ContinuousRecordToFileObserver implements
+    ASSET.Scenario.ScenarioSteppedListener
 {
   /**
    * keep track of whether the analyst wants detections recorded
@@ -64,32 +63,35 @@ abstract public class RecordStatusToFileObserverType extends ContinuousRecordToF
    */
   private TargetType _subjectToTrack;
 
-
-  //////////////////////////////////////////////////
+  // ////////////////////////////////////////////////
   // constructor
-  //////////////////////////////////////////////////
-
+  // ////////////////////////////////////////////////
 
   /**
    * an observer which wants to record it's data to file
-   *
-   * @param directoryName    the directory to output to
-   * @param fileName         the filename to output to
-   * @param recordDetections whether to record detections
-   * @param recordDecisions  whether to record decisions
-   * @param recordPositions  whether to record positions
-   * @param subjectToTrack   the type of target to track (or null for all targets)
-   * @param observerName     what to call this narrative observer
-   * @param isActive         whether this observer is active
+   * 
+   * @param directoryName
+   *          the directory to output to
+   * @param fileName
+   *          the filename to output to
+   * @param recordDetections
+   *          whether to record detections
+   * @param recordDecisions
+   *          whether to record decisions
+   * @param recordPositions
+   *          whether to record positions
+   * @param subjectToTrack
+   *          the type of target to track (or null for all targets)
+   * @param observerName
+   *          what to call this narrative observer
+   * @param isActive
+   *          whether this observer is active
    */
   public RecordStatusToFileObserverType(final String directoryName,
-                                        final String fileName,
-                                        final boolean recordDetections,
-                                        boolean recordDecisions,
-                                        final boolean recordPositions,
-                                        final TargetType subjectToTrack,
-                                        final String observerName,
-                                        boolean isActive)
+      final String fileName, final boolean recordDetections,
+      boolean recordDecisions, final boolean recordPositions,
+      final TargetType subjectToTrack, final String observerName,
+      boolean isActive)
   {
     super(directoryName, fileName, observerName, isActive);
 
@@ -99,49 +101,60 @@ abstract public class RecordStatusToFileObserverType extends ContinuousRecordToF
     _subjectToTrack = subjectToTrack;
   }
 
-
-  //////////////////////////////////////////////////
+  // ////////////////////////////////////////////////
   // member methods
-  //////////////////////////////////////////////////
+  // ////////////////////////////////////////////////
 
   /**
    * ok. ready to start writing. get on with it
-   *
-   * @param title      the title of this run
-   * @param currentDTG the current time (not model time)
+   * 
+   * @param title
+   *          the title of this run
+   * @param currentDTG
+   *          the current time (not model time)
    * @throws IOException
    */
-  abstract protected void writeFileHeaderDetails(final String title, long currentDTG) throws IOException;
-
+  abstract protected void writeFileHeaderDetails(final String title,
+      long currentDTG) throws IOException;
 
   /**
    * write this set of details to file
-   *
-   * @param loc  the current location
-   * @param stat the current status
-   * @param pt   the participant in question
+   * 
+   * @param loc
+   *          the current location
+   * @param stat
+   *          the current status
+   * @param pt
+   *          the participant in question
    */
-  abstract protected void writeThesePositionDetails(WorldLocation loc, Status stat, ParticipantType pt,
-                                                    long newTime);
-
+  abstract protected void writeThesePositionDetails(WorldLocation loc,
+      Status stat, ParticipantType pt, long newTime);
 
   /**
    * write these detections to file
-   *
-   * @param pt         the participant we're on about
-   * @param detections the current set of detections
-   * @param dtg        the dtg at which the detections were observed
+   * 
+   * @param pt
+   *          the participant we're on about
+   * @param detections
+   *          the current set of detections
+   * @param dtg
+   *          the dtg at which the detections were observed
    */
-  abstract protected void writeTheseDetectionDetails(ParticipantType pt, DetectionList detections, long dtg);
+  abstract protected void writeTheseDetectionDetails(ParticipantType pt,
+      DetectionList detections, long dtg);
 
   /**
    * write the current decision description to file
-   *
-   * @param pt       the participant we're looking at
-   * @param activity a description of the current activity
-   * @param dtg      the dtg at which the description was recorded
+   * 
+   * @param pt
+   *          the participant we're looking at
+   * @param activity
+   *          a description of the current activity
+   * @param dtg
+   *          the dtg at which the description was recorded
    */
-  abstract protected void writeThisDecisionDetail(NetworkParticipant pt, String activity, long dtg);
+  abstract protected void writeThisDecisionDetail(NetworkParticipant pt,
+      String activity, long dtg);
 
   /**
    * the scenario has stepped forward
@@ -154,8 +167,8 @@ abstract public class RecordStatusToFileObserverType extends ContinuousRecordToF
     // just check that/if we have an output file
     if (_os == null)
     {
-    	// ok, better sort out the output files.
-    	createOutputFile();
+      // ok, better sort out the output files.
+      createOutputFile();
     }
 
     // get the positions of the participants
@@ -165,36 +178,39 @@ abstract public class RecordStatusToFileObserverType extends ContinuousRecordToF
       final Integer integer = lst[thisIndex];
       if (integer != null)
       {
-        final ASSET.ParticipantType pt = _myScenario.getThisParticipant(integer.intValue());
+        final ASSET.ParticipantType pt =
+            _myScenario.getThisParticipant(integer.intValue());
 
-        // is this a target of interest?
-        if ((_subjectToTrack == null) || (_subjectToTrack.matches(pt.getCategory())))
+        if (pt.isAlive())
         {
-          if (getRecordPositions())
+          // is this a target of interest?
+          if ((_subjectToTrack == null)
+              || (_subjectToTrack.matches(pt.getCategory())))
           {
-            final ASSET.Participants.Status stat = pt.getStatus();
-            final MWC.GenericData.WorldLocation loc = stat.getLocation();
+            if (getRecordPositions())
+            {
+              final ASSET.Participants.Status stat = pt.getStatus();
+              final MWC.GenericData.WorldLocation loc = stat.getLocation();
 
+              // ok, now output these details in our special format
+              writeThesePositionDetails(loc, stat, pt, newTime);
+            }
 
-            // ok, now output these details in our special format
-            writeThesePositionDetails(loc, stat, pt, newTime);
+            if (getRecordDetections())
+            {
+              // get the list of detections
+              DetectionList list = pt.getNewDetections();
+              writeTheseDetectionDetails(pt, list, newTime);
+            }
+
+            if (getRecordDecisions())
+            {
+              // get the current activity
+              String thisActivity = pt.getActivity();
+              writeThisDecisionDetail(pt, thisActivity, newTime);
+            }
+
           }
-
-          if (getRecordDetections())
-          {
-            // get the list of detections
-            DetectionList list = pt.getNewDetections();
-            writeTheseDetectionDetails(pt, list, newTime);
-          }
-
-          if (getRecordDecisions())
-          {
-            // get the current activity
-            String thisActivity = pt.getActivity();
-            writeThisDecisionDetail(pt, thisActivity, newTime);
-          }
-
-
         }
 
       }
@@ -205,7 +221,8 @@ abstract public class RecordStatusToFileObserverType extends ContinuousRecordToF
   /**
    * the file has been opened, write the header details to it
    */
-  protected void writeFileHeaderInformation(FileWriter destination, String fileName) throws IOException
+  protected void writeFileHeaderInformation(FileWriter destination,
+      String fileName) throws IOException
   {
     // write out the build date
     writeBuildDate(getBuildDate());
@@ -218,9 +235,11 @@ abstract public class RecordStatusToFileObserverType extends ContinuousRecordToF
 
   /**
    * write the supplied build details to file
-   *
-   * @param details the build time/date
-   * @throws IOException if we have any of that file trouble
+   * 
+   * @param details
+   *          the build time/date
+   * @throws IOException
+   *           if we have any of that file trouble
    */
   protected abstract void writeBuildDate(String details) throws IOException;
 
@@ -240,9 +259,9 @@ abstract public class RecordStatusToFileObserverType extends ContinuousRecordToF
     _myScenario.removeScenarioSteppedListener(this);
   }
 
-  //////////////////////////////////////////////////
+  // ////////////////////////////////////////////////
   // member getter/setters
-  //////////////////////////////////////////////////
+  // ////////////////////////////////////////////////
 
   public boolean getRecordDetections()
   {
@@ -284,10 +303,11 @@ abstract public class RecordStatusToFileObserverType extends ContinuousRecordToF
     this._subjectToTrack = subjectToTrack;
   }
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////////////////////////////////
   // testing for this class
-  //////////////////////////////////////////////////////////////////////////////////////////////////
-  public static final class recToFileTest extends ContinuousRecordToFileObserver.RecToFileTest
+  // ////////////////////////////////////////////////////////////////////////////////////////////////
+  public static final class recToFileTest extends
+      ContinuousRecordToFileObserver.RecToFileTest
   {
     String _buildDate;
     String _headerDetails;
@@ -308,9 +328,11 @@ abstract public class RecordStatusToFileObserverType extends ContinuousRecordToF
       doThisTest(false, false, false, null);
     }
 
-    public void doThisTest(boolean testPos, boolean testDecs, boolean testDets, TargetType target)
+    public void doThisTest(boolean testPos, boolean testDecs, boolean testDets,
+        TargetType target)
     {
-      RecordStatusToFileObserverType observer = getRecordObserver(true, testDets, testDecs, testPos, target);
+      RecordStatusToFileObserverType observer =
+          getRecordObserver(true, testDets, testDecs, testPos, target);
       assertNotNull("observer wasn't created", observer);
 
       // and the scenario
@@ -320,28 +342,35 @@ abstract public class RecordStatusToFileObserverType extends ContinuousRecordToF
       // add a participant
       final SSN ssn = new SSN(12);
       ssn.setName("SSN");
-      ssn.setCategory(new Category(Category.Force.BLUE, Category.Environment.SUBSURFACE, Category.Type.SUBMARINE));
-      ssn.setDecisionModel(new ASSET.Models.Decision.Tactical.Wait(new Duration(12, Duration.HOURS), "do wait"));
+      ssn.setCategory(new Category(Category.Force.BLUE,
+          Category.Environment.SUBSURFACE, Category.Type.SUBMARINE));
+      ssn.setDecisionModel(new ASSET.Models.Decision.Tactical.Wait(
+          new Duration(12, Duration.HOURS), "do wait"));
       OpticSensor sampleSensor = new OpticSensor(12)
       {
         /**
 				 * 
 				 */
-				private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L;
 
-				// what is the detection strength for this target?
-        protected DetectionEvent detectThis(EnvironmentType environment, ParticipantType host, ParticipantType target1,
-                                            long time, ScenarioType scenario)
+        // what is the detection strength for this target?
+        protected DetectionEvent detectThis(EnvironmentType environment,
+            ParticipantType host, ParticipantType target1, long time,
+            ScenarioType scenario)
         {
-          DetectionEvent de = new DetectionEvent(12l, 12, null, this, null, null, null, null, null, null, null, null, ssn);
+          DetectionEvent de =
+              new DetectionEvent(12l, 12, null, this, null, null, null, null,
+                  null, null, null, null, ssn);
           return de;
         }
-        //        public void detects(EnvironmentType environment, DetectionList existingDetections, ParticipantType ownship, ScenarioType scenario,
-        //                            long time)
-        //        {
-        //          DetectionEvent de = new DetectionEvent(12l, 12, null, this, null, null, null, null, null, null, null, null, ssn);
-        //          existingDetections.add(de);
-        //        }
+        // public void detects(EnvironmentType environment, DetectionList existingDetections,
+        // ParticipantType ownship, ScenarioType scenario,
+        // long time)
+        // {
+        // DetectionEvent de = new DetectionEvent(12l, 12, null, this, null, null, null, null, null,
+        // null, null, null, ssn);
+        // existingDetections.add(de);
+        // }
       };
       ssn.addSensor(sampleSensor);
       ssn.setMovementChars(HeloMovementCharacteristics.getSampleChars());
@@ -362,8 +391,11 @@ abstract public class RecordStatusToFileObserverType extends ContinuousRecordToF
       // and do the setup
       observer.setup(cs);
 
-      assertNull("build date called - we should defer it until the first step", _buildDate);
-      assertNull("headerDetails called - we should defer it until the first step", _headerDetails);
+      assertNull("build date called - we should defer it until the first step",
+          _buildDate);
+      assertNull(
+          "headerDetails called - we should defer it until the first step",
+          _headerDetails);
 
       // do a step
       cs.step();
@@ -382,55 +414,64 @@ abstract public class RecordStatusToFileObserverType extends ContinuousRecordToF
       // and close the file
       assertNull("stream wasn't closed", observer._os);
 
-
     }
 
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
     // utility method to create an observer - over-ridden in instantiated classes
-    //////////////////////////////////////////////////
-    protected RecordStatusToFileObserverType getRecordObserver(boolean isActive, boolean dets, boolean
-      decisions, boolean positions, TargetType subject)
+    // ////////////////////////////////////////////////
+    protected RecordStatusToFileObserverType getRecordObserver(
+        boolean isActive, boolean dets, boolean decisions, boolean positions,
+        TargetType subject)
     {
-      return new RecordStatusToFileObserverType(super.dir_name, super.file_name, dets, decisions, positions, subject, "rec status", isActive)
+      return new RecordStatusToFileObserverType(super.dir_name,
+          super.file_name, dets, decisions, positions, subject, "rec status",
+          isActive)
       {
         protected void writeBuildDate(String details) throws IOException
         {
           _buildDate = details;
         }
 
-        protected void writeFileHeaderDetails(String title, long currentDTG) throws IOException
+        protected void writeFileHeaderDetails(String title, long currentDTG)
+            throws IOException
         {
           _headerDetails = title;
         }
 
-        protected void writeTheseDetectionDetails(ParticipantType pt, DetectionList detections, long dtg)
+        protected void writeTheseDetectionDetails(ParticipantType pt,
+            DetectionList detections, long dtg)
         {
           _detectionDetailsWritten = true;
         }
 
-        protected void writeThesePositionDetails(WorldLocation loc, Status stat, ParticipantType pt, long newTime)
+        protected void writeThesePositionDetails(WorldLocation loc,
+            Status stat, ParticipantType pt, long newTime)
         {
           _positionDetailsWritten = true;
         }
 
-        protected void writeThisDecisionDetail(NetworkParticipant pt, String activity, long dtg)
+        protected void writeThisDecisionDetail(NetworkParticipant pt,
+            String activity, long dtg)
         {
           _decisionDetailsWritten = true;
         }
 
         protected String getMySuffix()
         {
-          return "rso";  //To change body of implemented methods use File | Settings | File Templates.
+          return "rso"; // To change body of implemented methods use File | Settings | File
+                        // Templates.
         }
 
         protected String newName(String name)
         {
-          return "new_rec_status";  //To change body of implemented methods use File | Settings | File Templates.
+          return "new_rec_status"; // To change body of implemented methods use File | Settings |
+                                   // File Templates.
         }
 
         protected EditorType createEditor()
         {
-          return null;  //To change body of implemented methods use File | Settings | File Templates.
+          return null; // To change body of implemented methods use File | Settings | File
+                       // Templates.
         }
 
       };

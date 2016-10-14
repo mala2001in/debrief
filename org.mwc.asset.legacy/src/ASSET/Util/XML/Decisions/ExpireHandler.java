@@ -23,23 +23,24 @@ package ASSET.Util.XML.Decisions;
  * @version 1.0
  */
 
+import ASSET.Models.Decision.Expire;
 import ASSET.Models.Decision.Terminate;
 import ASSET.Util.XML.Decisions.Tactical.CoreDecisionHandler;
 import MWC.GenericData.Duration;
 import MWC.Utilities.ReaderWriter.XML.Util.DurationHandler;
 
-abstract public class TerminateHandler extends CoreDecisionHandler
+abstract public class ExpireHandler extends CoreDecisionHandler
 {
 
-	private final static String type = "Terminate";
+  private final static String type = "Expire";
   private final static String DURATION = "Delay";
-	
+
   Duration _myDuration;
 
-	public TerminateHandler()
-	{
-		super(type);
-		
+  public ExpireHandler()
+  {
+    super(type);
+
     addHandler(new DurationHandler(DURATION)
     {
       public void setDuration(Duration res)
@@ -47,42 +48,42 @@ abstract public class TerminateHandler extends CoreDecisionHandler
         _myDuration = res;
       }
     });
-	}
+  }
 
-	public void elementClosed()
-	{
-		final Terminate ev = new Terminate();
+  public void elementClosed()
+  {
+    final Expire ev = new Expire();
 
-		super.setAttributes(ev);
+    super.setAttributes(ev);
 
-		// store the duration, if we have one
-		if(_myDuration != null)
-		{
-		  ev.setDelay(_myDuration);
-		  _myDuration = null;
-		}
-		
-		// finally output it
-		setModel(ev);
-	}
+    // store the duration, if we have one
+    if (_myDuration != null)
+    {
+      ev.setDelay(_myDuration);
+      _myDuration = null;
+    }
 
-	abstract public void setModel(ASSET.Models.DecisionType dec);
+    // finally output it
+    setModel(ev);
+  }
 
-	static public void exportThis(final Object toExport,
-			final org.w3c.dom.Element parent, final org.w3c.dom.Document doc)
-	{
-		// create ourselves
-		final org.w3c.dom.Element thisPart = doc.createElement(type);
+  abstract public void setModel(ASSET.Models.DecisionType dec);
 
-		// get data item
-		final Terminate bb = (Terminate) toExport;
+  static public void exportThis(final Object toExport,
+      final org.w3c.dom.Element parent, final org.w3c.dom.Document doc)
+  {
+    // create ourselves
+    final org.w3c.dom.Element thisPart = doc.createElement(type);
 
-		// first output the parent bits
-		CoreDecisionHandler.exportThis(bb, thisPart, doc);
-		DurationHandler.exportDuration(DURATION, bb.getDelay(), thisPart, doc);
+    // get data item
+    final Terminate bb = (Terminate) toExport;
 
-		parent.appendChild(thisPart);
+    // first output the parent bits
+    CoreDecisionHandler.exportThis(bb, thisPart, doc);
+    DurationHandler.exportDuration(DURATION, bb.getDelay(), thisPart, doc);
 
-	}
+    parent.appendChild(thisPart);
+
+  }
 
 }
