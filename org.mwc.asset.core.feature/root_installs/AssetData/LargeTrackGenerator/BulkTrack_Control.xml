@@ -3,26 +3,36 @@
 	xmlns="http://www.mwc.org/asset">
 	<ScenarioGenerator>
 		<MultiParticipantGenerator>
-			<ParticipantVariance name="FisherOne" number="5">
+			<ParticipantVariance name="FisherOne" number="100">
 				<Variance name="Vary course" id="Status">
 					<Attribute name="Course">
 						<Range max="0.0" min="359.9" />
 					</Attribute>
 
 				</Variance>
-				<ParticipantLocation>
+				<Variance name="vary start time" id="/DeferredBirth/Duration">
+					<Attribute name="Value">
+						<Range max="70" min="0" />
+					</Attribute>					
+				</Variance>
+				<Variance name="vary end" id="/Expire/Delay">
+					<Attribute name="Value">
+						<Range max="70" min="0" />
+					</Attribute>					
+				</Variance>
+				<ParticipantLocation inRandomLocations="true">
 					<WorldArea>
 						<TopLeft>
 							<relativeLocation>
-								<North Value="20.0" Units="nm" />
+								<North Value="140" Units="nm" />
 								<East Value="-5" Units="nm" />
-							</relativeLocation>							
+							</relativeLocation>
 						</TopLeft>
 						<BottomRight>
 							<relativeLocation>
 								<North Value="0.0" Units="nm" />
-								<East Value="15.0" Units="nm" />
-							</relativeLocation>							
+								<East Value="140" Units="nm"></East>
+							</relativeLocation>
 						</BottomRight>
 					</WorldArea>
 				</ParticipantLocation>
@@ -31,11 +41,13 @@
 	</ScenarioGenerator>
 	<ObserverList>
 		<TimeObserver Name="Doomsday Timer" Active="true">
-			<Duration Value="21" Units="days" />
+			<Duration Value="12" Units="hours" />
 		</TimeObserver>
 		<DebriefReplayObserver Name="Debrief tracks"
-			record_detections="false" record_positions="true" Active="true"
+			record_detections="false" record_positions="true" Active="false"
 			record_decisions="true">
 		</DebriefReplayObserver>
+		<NMEATrackObserver Name="NMEA Tracks" Active="true"
+			file_name="nmea_tracks.log" />
 	</ObserverList>
 </ScenarioController>

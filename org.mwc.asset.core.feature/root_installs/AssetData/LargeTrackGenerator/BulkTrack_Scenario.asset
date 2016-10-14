@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Scenario Name="Area search scenario" xmlns="http://www.mwc.org/asset"
+<Scenario Name="Bulk track scenario" xmlns="http://www.mwc.org/asset"
 	Created="2010-01-12T12:13:14Z" StartTime="2010-01-12T12:13:14Z" Case="1"
 	ShowName="false" ShowActivity="false" ShowSymbol="true">
 	<StepTime Units="seconds" Value="7" />
@@ -7,26 +7,35 @@
 		SeaState="1">
 	</Environment>
 	<Participants>
-		<Surface Name="FisherOne">
-			<Category Type="FISHING_VESSEL" Force="RED" Environment="SURFACE"></Category>
+		<Surface Name="FisherOne" isAlive="false">
+			<Category Type="FISHING_VESSEL" Force="RED"
+				Environment="SURFACE"></Category>
 			<SensorFit>
 				<TypedCookieSensor>
 					<TypedRangeDoublet>
 						<Type Name="BLUE" />
 						<DetectionRange Value="35" Units="nm" />
 					</TypedRangeDoublet>
-				</TypedCookieSensor></SensorFit>
+				</TypedCookieSensor>
+			</SensorFit>
 			<Status Course="30" Fuel="0.0">
 				<Location>
 					<relativeLocation>
 						<North Value="10" Units="nm" />
 						<East Value="-2" Units="nm" />
 					</relativeLocation>
-					
+
 				</Location>
 				<Speed Value="0" Units="kts" />
 			</Status>
 			<Waterfall Name="Southern Trawl" IsActive="true">
+				<DeferredBirth Name="deferredBirth">
+					<Duration Value="12" Units="hours" />
+				</DeferredBirth>
+				<Expire Name="">
+					<Delay Value="2" Units="hours" />
+				</Expire>
+
 				<Evade Name="">
 					<Duration Value="15" Units="minutes" />
 					<FleeHeight Value="0.0" Units="ft" />
@@ -34,7 +43,8 @@
 					<TargetType>
 						<Type Name="BLUE" />
 					</TargetType>
-				</Evade><RectangleWander Name="Random patrol">
+				</Evade>
+				<RectangleWander Name="Random patrol">
 					<Area>
 						<TopLeft>
 							<relativeLocation>
@@ -52,7 +62,7 @@
 					<Speed Value="6" Units="kts" />
 					<Height Value="0.0" Units="ft" />
 				</RectangleWander>
-				
+
 			</Waterfall>
 			<SurfaceMovementCharacteristics Name="9m fisherman"
 				FuelUsageRate="0.0001">
