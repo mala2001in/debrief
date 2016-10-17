@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import junit.framework.TestCase;
+
 import ASSET.NetworkParticipant;
 import ASSET.ParticipantType;
 import ASSET.ScenarioType;
@@ -117,10 +119,10 @@ public class NMEATrackObserver extends RecordStatusToFileObserverType
     double dLong = Math.abs(loc.getLong());
     
     int degLat = (int) dLat;
-    double minLat = dLat - degLat;
+    double minLat = (dLat - degLat) * 60;
     char hemLat = loc.getLat() > 0 ? 'N' : 'S';
     int degLong = (int) dLong;
-    double minLong = dLong - degLong;
+    double minLong = (dLong - degLong) * 60;
     char hemLong = loc.getLong() > 0 ? 'E' : 'W';
     
     // 3606.3667,N,00522.3698,W
@@ -344,4 +346,18 @@ public class NMEATrackObserver extends RecordStatusToFileObserverType
     }
 
   }
+  
+  static public class TestExport extends  TestCase
+  {
+    public void testExport()
+    {
+      // 3606.3667,N,00522.3698,W
+      
+      WorldLocation loc = new WorldLocation(36.106111, -5.37283, 0);
+      NMEATrackObserver export = new NMEATrackObserver(null, null, false, null, true);
+      String res = export.locationFor(loc);
+      assertEquals("some answer", "3606.3667,N,00522.3698,W", res);
+    }
+  }
+  
 }
