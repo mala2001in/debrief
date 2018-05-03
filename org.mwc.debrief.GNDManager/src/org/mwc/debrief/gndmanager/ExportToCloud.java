@@ -147,7 +147,8 @@ public class ExportToCloud implements RightClickContextItemGenerator
 
 					final CouchTrack newT = new CouchTrack(tw);
 
-					docs.add(newT.getDocument());
+			//		docs.add(newT.getDocument());
+					docs.addAll(newT.getTSDocument());
 				}
 			}
 

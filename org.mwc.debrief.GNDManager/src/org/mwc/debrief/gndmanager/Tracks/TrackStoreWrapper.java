@@ -175,6 +175,7 @@ public class TrackStoreWrapper extends BaseLayer implements WatchableList,
 		private EditorType _myEditor = null;
 		private final ObjectMapper _mapper = new ObjectMapper();
 		private TrackStoreWrapper _parent;
+    private ArrayNode _docArr;
 
 		public CouchTrack(final JsonNode theDoc, final TrackStoreWrapper parent)
 		{
@@ -190,6 +191,7 @@ public class TrackStoreWrapper extends BaseLayer implements WatchableList,
 		public CouchTrack(final TrackWrapper tw)
 		{
 			_doc = _mapper.createObjectNode();
+			_docArr = _mapper.createArrayNode();
 			
 			final ObjectNode oNode = (ObjectNode) _doc;
 
@@ -204,24 +206,42 @@ public class TrackStoreWrapper extends BaseLayer implements WatchableList,
 			TimePeriod extent = null;
 			WorldArea area = null;
 			
+			// get the name of the plot, as a way of simulating exercise name
+			final String serial = CorePlugin.getActivePage().getActiveEditor().getTitle();
+			
 			while (posits.hasMoreElements())
 			{
 				final Editable editable = (Editable) posits.nextElement();
 				final FixWrapper fw = (FixWrapper) editable;
 
+				final ObjectNode thisItem = _mapper.createObjectNode();
+				
 				// first the time
 				times.add(iso.format(fw.getDateTimeGroup().getDate()));
+        thisItem.put("time", iso.format(fw.getDateTimeGroup().getDate()));
+        
+        // track-level metadata
+        thisItem.put("platform", fw.getTrackWrapper().getName());
+        thisItem.put("serial", serial);
 
 				// location first
 				final ArrayNode thisLoc = _mapper.createArrayNode();
 				thisLoc.add(fw.getLocation().getLong());
 				thisLoc.add(fw.getLocation().getLat());
 				locs.add(thisLoc);
+				
+				thisItem.put("lat", fw.getLocation().getLat());
+        thisItem.put("long", fw.getLocation().getLat());
 
 				// now the course/speed
 				courses.add(fw.getCourseDegs());
 				speeds.add(new WorldSpeed(fw.getSpeed() / 3d, WorldSpeed.ft_sec)
 						.getValueIn(WorldSpeed.M_sec));
+
+				thisItem.put("course",fw.getCourseDegs());
+				thisItem.put("speed", new WorldSpeed(fw.getSpeed() / 3d, WorldSpeed.ft_sec)
+            .getValueIn(WorldSpeed.M_sec));
+
 				
 				if(extent == null)
 				{
@@ -234,6 +254,7 @@ public class TrackStoreWrapper extends BaseLayer implements WatchableList,
 					area.extend(fw.getLocation());
 				}
 				
+				_docArr.add(thisItem);
 			}
 
 			// wrap the location
@@ -648,6 +669,11 @@ public class TrackStoreWrapper extends BaseLayer implements WatchableList,
 		{
 			return _doc;
 		}
+
+    public ArrayNode getTSDocument()
+    {
+      return _docArr;
+    }
 	}
 
 	private transient HashMap<String, CouchTrack> _myCache = new HashMap<String, CouchTrack>();
